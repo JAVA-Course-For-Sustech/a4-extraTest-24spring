@@ -88,4 +88,52 @@ public class CourseManagerExtraTest {
         manager.finalizeEnrollments();
         assertEquals(3, c1.getSuccessStudents().size());
     }
+      @Test
+    void extraTest3(){
+        Student s1 = new Student("s1", "xxx", "A", 40);
+        Student s2 = new Student("s2", "xxx", "A", 40);
+        Student s3 = new Student("s3", "xxx", "A", 40);
+        Student s4 = new Student("s4", "xxx", "A", 40);
+        Student s5 = new Student("s5", "xxx", "A", 40);
+        Student s6 = new Student("s6", "xxx", "A", 40);
+        Course c1 = new Course("c1", "CS111", 4);
+        manager.addStudent(s1);
+        manager.addStudent(s2);
+        manager.addStudent(s3);
+        manager.addStudent(s4);
+        manager.addStudent(s5);
+        manager.addStudent(s6);
+        manager.addCourse(c1);
+        assertTrue(s1.enrollCourse("c1", 10));
+        assertTrue(s2.enrollCourse("c1", 20));
+        assertTrue(s3.enrollCourse("c1", 30));
+        assertTrue(s4.enrollCourse("c1", 15));
+        assertTrue(s5.enrollCourse("c1", 15));
+        assertTrue(s6.enrollCourse("c1", 10));
+        assertTrue(s3.modifyEnrollCredit("c1",5));
+        manager.finalizeEnrollments();
+        assertEquals(3, c1.getSuccessStudents().size());
+    }
+    @Test
+    void extraTest4(){
+        Student s1 = new Student("s1", "xxx", "A", 40);
+        Student s2 = new Student("s2", "xxx", "A", 40);
+        Student s3 = new Student("s3", "xxx", "A", 40);
+        Course c1 = new Course("c1", "CS111", 2);
+        Course c2 = new Course("c2", "CS222", 2);
+        Course c3 = new Course("c3", "CS333", 2);
+        manager.addStudent(s1);
+        manager.addStudent(s2);
+        manager.addStudent(s3);
+        manager.addCourse(c1);
+        manager.addCourse(c2);
+        manager.addCourse(c3);
+        s1.enrollCourse("c1",20);
+        s1.dropEnrollCourse("c1");
+        s2.enrollCourse("c2",20);
+        s2.modifyEnrollCredit("c2",15);
+        s3.dropEnrollCourse("c3");
+        s3.modifyEnrollCredit("c3",10);
+        manager.finalizeEnrollments();
+    }
 }
