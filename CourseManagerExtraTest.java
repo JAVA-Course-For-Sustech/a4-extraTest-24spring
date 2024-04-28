@@ -88,8 +88,9 @@ public class CourseManagerExtraTest {
         manager.finalizeEnrollments();
         assertEquals(3, c1.getSuccessStudents().size());
     }
-      @Test
-    void extraTest3(){
+
+    @Test
+    void extraTest3() {
         Student s1 = new Student("s1", "xxx", "A", 40);
         Student s2 = new Student("s2", "xxx", "A", 40);
         Student s3 = new Student("s3", "xxx", "A", 40);
@@ -110,12 +111,19 @@ public class CourseManagerExtraTest {
         assertTrue(s4.enrollCourse("c1", 15));
         assertTrue(s5.enrollCourse("c1", 15));
         assertTrue(s6.enrollCourse("c1", 10));
-        assertTrue(s3.modifyEnrollCredit("c1",5));
+        assertTrue(s3.modifyEnrollCredit("c1", 5));
         manager.finalizeEnrollments();
         assertEquals(3, c1.getSuccessStudents().size());
+        assertTrue(c1.getSuccessStudents().contains(s2));
+        assertTrue(c1.getSuccessStudents().contains(s4));
+        assertTrue(c1.getSuccessStudents().contains(s5));
+        assertTrue(s2.getSuccessCourses().contains(c1));
+        assertTrue(s4.getSuccessCourses().contains(c1));
+        assertTrue(s5.getSuccessCourses().contains(c1));
     }
+
     @Test
-    void extraTest4(){
+    void extraTest4() {
         Student s1 = new Student("s1", "xxx", "A", 40);
         Student s2 = new Student("s2", "xxx", "A", 40);
         Student s3 = new Student("s3", "xxx", "A", 40);
@@ -128,12 +136,53 @@ public class CourseManagerExtraTest {
         manager.addCourse(c1);
         manager.addCourse(c2);
         manager.addCourse(c3);
-        s1.enrollCourse("c1",20);
+        s1.enrollCourse("c1", 20);
         s1.dropEnrollCourse("c1");
-        s2.enrollCourse("c2",20);
-        s2.modifyEnrollCredit("c2",15);
+        s2.enrollCourse("c2", 20);
+        s2.modifyEnrollCredit("c2", 15);
         s3.dropEnrollCourse("c3");
-        s3.modifyEnrollCredit("c3",10);
+        s3.modifyEnrollCredit("c3", 10);
         manager.finalizeEnrollments();
+        assertTrue(c2.getSuccessStudents().contains(s2));
+        assertFalse(c3.getSuccessStudents().contains(s3));
+        assertEquals(0, c1.getSuccessStudents().size());
     }
+
+    @Test
+    void extraTest5() {
+        Student[] students = new Student[8];
+        for (int i = 0; i < students.length; i++) {
+            students[i] = new Student(String.format("s%d", i), "xx", "stu", 30);
+            manager.addStudent(students[i]);
+        }
+        Course c = new Course("c", "name", 5);
+        manager.addCourse(c);
+
+        students[0].enrollCourse("c", 25);//ok
+        students[1].enrollCourse("c", 20);//ok
+        students[2].enrollCourse("c", 20);//ok
+        students[3].enrollCourse("c", 5);
+        students[4].enrollCourse("c", 5);
+        students[5].enrollCourse("c", 18);
+        students[6].enrollCourse("c", 18);
+        students[7].enrollCourse("c", 15);//27 ok
+
+        assertFalse(students[3].modifyEnrollCredit("c", 31));
+        assertTrue(students[7].modifyEnrollCredit("c", 27));
+
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[0]).get(0).contains("c: 25"));
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[1]).get(0).contains("c: 20"));
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[2]).get(0).contains("c: 20"));
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[7]).get(0).contains("c: 27"));
+
+        manager.finalizeEnrollments();
+        ArrayList<Student> successStudents = c.getSuccessStudents();
+        assertEquals(4, successStudents.size());
+        assertTrue(successStudents.contains(students[0]));
+        assertTrue(successStudents.contains(students[1]));
+        assertTrue(successStudents.contains(students[2]));
+        assertTrue(successStudents.contains(students[7]));
+
+    }
+
 }
