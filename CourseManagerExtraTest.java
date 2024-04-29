@@ -185,4 +185,31 @@ public class CourseManagerExtraTest {
 
     }
 
+     @Test
+    void extraTest6(){
+        Course c = new Course("c", "name", 3);
+        manager.addCourse(c);
+        Student[] students = new Student[4];
+        for (int i = 0; i < students.length; i++) {
+            students[i] = new Student(String.format("s%d", i), "xx", "stu", 30);
+            manager.addStudent(students[i]);
+        }
+        students[0].enrollCourse("c", 20);//ok
+        students[1].enrollCourse("c", 20);//ok
+        students[2].enrollCourse("c", 20);//ok
+        students[3].enrollCourse("c", 5);
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[0]).get(0).contains("c: 20"));
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[1]).get(0).contains("c: 20"));
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[2]).get(0).contains("c: 20"));
+        assertTrue(manager.getEnrolledCoursesWithCredits(students[3]).get(0).contains("c: 5"));
+
+        manager.finalizeEnrollments();
+        ArrayList<Student> successStudents = c.getSuccessStudents();
+        assertEquals(3, successStudents.size());
+        assertTrue(successStudents.contains(students[0]));
+        assertTrue(successStudents.contains(students[1]));
+        assertTrue(successStudents.contains(students[2]));
+
+    }
+
 }
